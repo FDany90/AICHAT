@@ -50,200 +50,16 @@ Plataforma web (con roadmap a PWA y móvil) donde usuarios chatean con personaje
 
 **Equipo**: solo dev (Daniel).
 
-> 📌 **La decisión SFW vs NSFW está justificada en detalle en la Sección 2**. Es la decisión más importante del proyecto y afecta a procesador de pago, proveedor de LLM, distribución, marketing, legal y mercado total disponible.
+> 📌 La justificación detallada de **SFW vs NSFW** (procesadores, LLM, marketing, legal) está en la **[Sección 16](#16-decisión-sfw-vs-nsfw-decisión-fundacional)** al final del documento.
 
 ---
 
-## 2. Decisión SFW vs NSFW (decisión fundacional)
+## 2. Visión y posicionamiento
 
-> **TL;DR**: SFW soft en V1. NSFW como V2 separada queda como posibilidad **post-validación de mercado**, no antes.
-
-### 2.1 Por qué esta decisión es fundacional
-
-La decisión sobre el nivel de contenido **no es una decisión de producto, es la decisión que define la viabilidad del proyecto**. Afecta a:
-
-- **Qué procesador de pago puedes usar** (y cuánto te cuesta)
-- **Qué LLM puedes usar** (y por tanto qué calidad de conversación das)
-- **Si puedes lanzar app móvil** (App Store / Play Store)
-- **Qué canales de marketing tienes disponibles**
-- **El tamaño total del mercado al que apuntas**
-- **Tu exposición legal y regulatoria**
-- **El estigma o legitimidad de tu marca**
-
-Por eso se documenta primero, antes de cualquier otra decisión.
-
-### 2.2 Comparativa exhaustiva SFW vs NSFW
-
-#### 2.2.1 Procesadores de pago
-
-| Procesador | SFW soft | NSFW explícito | Notas |
-|---|---|---|---|
-| **Stripe** | ✅ Acepta | ❌ Prohibido | Cierre + reserva fondos 180 días si te pillan |
-| **PayPal** | ✅ Acepta | ❌ Prohibido | Mismo riesgo + ban de cuenta personal asociada |
-| **Lemon Squeezy** (MoR) | ✅ Acepta | ❌ Rechaza | Recomendado para SFW: gestiona impuestos globales |
-| **Paddle** (MoR) | ✅ Acepta | ❌ Rechaza | Alternativa a Lemon |
-| **FastSpring** (MoR) | ✅ Acepta | ❌ Rechaza | Más caro, más enterprise |
-| **CCBill** | ⚠️ Overkill | ✅ Estándar adult | Líder histórico del sector adult |
-| **Segpay** | ⚠️ Overkill | ✅ Aceptado | Alternativa a CCBill |
-| **Epoch** | ⚠️ Overkill | ✅ Aceptado | Veterano del sector |
-| **Verotel** | ⚠️ Overkill | ✅ Aceptado | Europeo |
-| **NOWPayments** (cripto) | ✅ Acepta | ✅ Acepta | Acepta 300+ cryptos |
-| **Cryptomus** (cripto) | ✅ Acepta | ✅ Acepta | Popular en sector adult |
-
-**Comparativa de costes**:
-
-| Procesador | Comisión | Setup fee | Reserva | Tiempo aprobación |
-|---|---|---|---|---|
-| **Stripe** (SFW) | 2.9% + $0.30 | $0 | 0% | Instantáneo |
-| **PayPal** (SFW) | 2.9-3.5% | $0 | 0% | Instantáneo |
-| **Lemon Squeezy** (SFW MoR) | 5% + $0.50 | $0 | 0% | Días |
-| **CCBill** (NSFW) | 10-15% | $500-1.500 | 5-10% durante 6 meses | 2-8 semanas |
-| **Segpay** (NSFW) | 10-15% | $500-2.000 | 5-10% durante 6 meses | 2-8 semanas |
-| **NOWPayments** (cripto) | 0.5% | $0 | 0% | Días |
-
-**Impacto económico** simulado con $10.000 ingresos/mes:
-
-| Vía | Comisión | Reserva retenida | **Neto al mes** |
-|---|---|---|---|
-| SFW + Stripe | $290 | $0 | **$9.710** |
-| SFW + Lemon Squeezy | $500 | $0 | **$9.500** |
-| NSFW + CCBill | $1.250 | $750 (recuperable a 6m) | **$8.000** |
-| NSFW + cripto only | $50 | $0 | **$9.950** (pero pool de usuarios menor) |
-
-**Conclusión 2.2.1**: SFW reduce costes de pago, elimina setup fee y permite operar desde día 1.
-
-#### 2.2.2 Proveedores de IA (LLM)
-
-| Proveedor | Modelo | SFW | NSFW | Coste $/M tokens (in / out) | Calidad |
-|---|---|---|---|---|---|
-| **Anthropic** | Claude Haiku 4.5 | ✅ | ❌ AUP prohíbe | $1 / $5 | Alta |
-| **Anthropic** | Claude Sonnet 4.6 | ✅ | ❌ AUP prohíbe | $3 / $15 | Muy alta |
-| **OpenAI** | GPT-4o-mini | ✅ | ❌ ToS prohíbe | $0.15 / $0.60 | Alta |
-| **OpenAI** | GPT-4o | ✅ | ❌ ToS prohíbe | $5 / $15 | Muy alta |
-| **Google** | Gemini 2.5 Flash | ✅ | ❌ ToS prohíbe | $0.30 / $2.50 | Alta |
-| **OpenRouter** | Lumimaid 70B | ✅ | ✅ | ~$0.80 / $0.80 | Media-Alta (NSFW) |
-| **OpenRouter** | Magnum v4 72B | ✅ | ✅ | ~$1.50 / $1.50 | Alta (NSFW) |
-| **Mistral** | Nemo 12B | ✅ | ⚠️ con prompts cuidadosos | $0.10 / $0.30 | Media |
-| **DeepSeek** | DeepSeek V3 | ✅ | ⚠️ zona gris según provider | $0.30 / $1.10 | Alta |
-
-**Calidad comparada para chat emocional/companion**:
-
-SFW (libre acceso a top tier):
-- 🥇 Claude Sonnet 4.6 — el mejor para conexión emocional, calidez, memoria larga
-- 🥈 GPT-4o — muy bueno
-- 🥉 Claude Haiku 4.5 — 90% calidad de Sonnet a 1/3 del precio (modelo principal recomendado)
-- Gemini 2.5 Flash — bueno y barato
-- DeepSeek V3 — bueno, multi-idioma fuerte, barato
-
-NSFW (limitado a uncensored):
-- 🥇 Magnum v4 72B — mejor calidad NSFW del mercado open
-- 🥈 Lumimaid 70B — popular y equilibrado
-- 🥉 Llama 3.3 70B fine-tunes uncensored — variable
-
-**Conclusión 2.2.2**: la calidad NSFW disponible es **inferior** a la calidad SFW de Claude/GPT. Hacer NSFW = renunciar a usar los mejores modelos del mundo.
-
-#### 2.2.3 Distribución y marketing
-
-| Canal | SFW | NSFW |
-|---|---|---|
-| App Store (Apple) | ✅ Aceptado | ❌ Prohibido (regla 1.1.4 de la App Review Guidelines) |
-| Play Store (Google) | ✅ Aceptado | ❌ Prohibido o relegado a sideload |
-| Google Ads | ✅ Permitido | ❌ Prohibido |
-| Meta Ads (Facebook/Instagram) | ✅ Permitido | ❌ Prohibido |
-| TikTok Ads | ✅ Permitido | ❌ Prohibido |
-| Reddit Ads | ✅ Permitido | ⚠️ Solo en subs adult específicos |
-| YouTube partnerships | ✅ Posible | ❌ No viable |
-| Influencers mainstream | ✅ Posible | ❌ Limitado a nichos adult |
-| SEO Google (orgánico) | ✅ Sin penalización | ⚠️ Penalizado parcialmente (SafeSearch) |
-| Tráfico afiliados adult | ⚠️ Irrelevante | ✅ Ecosistema establecido |
-| Email marketing (Resend, etc.) | ✅ Sin restricción | ⚠️ Mayoría de proveedores rechazan |
-
-**Conclusión 2.2.3**: SFW tiene acceso a todos los canales escalables. NSFW depende de canales especializados con menor alcance.
-
-#### 2.2.4 Legal y regulatorio
-
-| Aspecto | SFW | NSFW |
-|---|---|---|
-| **18 USC 2257** (record-keeping EE.UU.) | No aplica | Aplica con exención AI declarada (riesgo si mal documentado) |
-| **EU AI Act** | Aplica disclosure | Aplica disclosure + restricciones extra |
-| **GDPR** | Aplica estándar | Aplica con extra cuidado en datos sensibles |
-| **Verificación edad** | Checkbox 18+ | Verificación robusta (DNI, servicio externo $0.50-2/usuario) |
-| **DMCA** | Aplica con baja incidencia | Aplica con alta incidencia (más reportes) |
-| **Restricciones país** | Mínimas | Prohibido en Indonesia, Tailandia, partes Asia/África/Oriente Medio |
-| **Riesgo demanda psicológica** | Bajo | Alto (especialmente si usuario menor o vulnerable) |
-| **Estructura legal recomendada** | Autónomo o SL | SL (separación patrimonial obligatoria) |
-
-**Conclusión 2.2.4**: NSFW multiplica obligaciones legales y exposición a demandas.
-
-### 2.3 Tamaño y características del mercado
-
-| Aspecto | SFW companion | NSFW companion |
-|---|---|---|
-| Tamaño mercado global | **5-10x más grande** | Más pequeño pero pago/usuario mayor |
-| Competencia | Alta pero diferenciable | Alta y agresiva |
-| Tipo de usuario | Diverso (soledad, curiosidad, romance) | Concentrado (hombres 18-45) |
-| ARPU paying | $15-30/mes | $30-100/mes |
-| Conversión free→paid | 4-7% | 6-12% |
-| Churn mensual | 15-25% | 25-40% (más alto) |
-| LTV paying | $80-180 | $120-300 |
-| Reputación social | Neutra/positiva (wellness) | Negativa/estigma |
-| Capacidad de PR/medios | Alta | Difícil |
-| Casos de éxito recientes | Replika 30M users, Character.AI vendida $2.7B (2024) | Candy.AI, DreamGF (privadas, sin datos públicos confirmables) |
-
-### 2.4 Por qué se eligió SFW soft (los 10 motivos)
-
-1. **Procesador de pago disponible desde día 1** sin pagar $500-1.500 de setup ni esperar 2-8 semanas. Crítico con presupuesto $200-300.
-2. **LLM de máxima calidad disponible** (Claude Haiku/Sonnet vs uncensored de calidad media).
-3. **Marketing escalable** — Google Ads, Meta Ads, TikTok, App Stores cuando llegue el momento.
-4. **Mercado total 5-10x mayor** — Replika 30M, Character.AI vendida por $2.7B.
-5. **Posicionamiento de marca limpio** — sin estigma, mediabilidad alta, partnerships posibles.
-6. **Riesgo legal inferior** — sin 2257, sin lawsuits por contenido sexual, sin requisito KYC fuerte.
-7. **Menor coste operativo** — sin reserva del 5-10% de CCBill, churn más bajo, soporte más sencillo.
-8. **Margen de NSFW soft permitido** — fotos de lencería/bikini son SFW para Stripe/Lemon (ver caso qkkie con PayPal). No se renuncia al "premium" desbloqueable.
-9. **Compatibilidad con apps móviles a futuro** — fundamental para escalar.
-10. **Capacidad de operar como solo dev** — NSFW realmente requiere equipo o partnership con procesador adult, gestión legal, etc. Solo dev + NSFW = inviable con $300.
-
-### 2.5 Visión a futuro: posible versión NSFW (V2)
-
-**No se descarta**. Si la versión SFW valida product-market fit y genera caja, podría considerarse una versión NSFW separada.
-
-**Cuándo tendría sentido lanzarla**:
-- Tras 12-18 meses de operación SFW estable
-- Con $5.000-10.000 MRR consolidados (caja para invertir)
-- Con base de usuarios SFW que demande ese tipo de contenido (señal de demanda real)
-- Con tiempo / equipo para gestionar las complicaciones operativas extra
-
-**Cómo se haría (arquitectura V2 NSFW)**:
-- **Dominio separado** (ej: `marca.com` SFW, `marca-plus.com` o entidad legal distinta para NSFW)
-- **Empresa legal separada** o subsidiaria para aislar riesgo del negocio SFW
-- **Procesador CCBill / Segpay** + cripto (ya factible con caja consolidada)
-- **Modelos uncensored vía OpenRouter** (Magnum, Lumimaid)
-- **Verificación de edad robusta** (servicio tipo Yoti, AgeVerify, $0.50-2/verificación)
-- **Compliance 2257-exempt declaration** (porque personajes son IA, no personas reales — debe ir formal y visible)
-- **Reutilización de tecnología SFW** (motor de memoria, mood, vida propia, todo aplica)
-- **Migración voluntaria de usuarios** ("desbloquear modo adulto" con verificación adicional y consentimiento explícito)
-
-**Lo que NO se hará nunca**:
-- ❌ Mezclar contenido NSFW en la app SFW (riesgo de cierre instantáneo de Stripe/Lemon → muerte del negocio)
-- ❌ Ambigüedad legal de tipo "está en gris" — o claramente SFW o claramente NSFW separado
-- ❌ Lanzar V2 NSFW antes de tener V1 SFW estable y rentable
-
-### 2.6 Resumen de la decisión
-
-> **SFW soft V1 ahora. NSFW V2 quizás en 12-18 meses tras validar SFW.**
->
-> Razón principal: **viabilidad económica y operativa con $300 y solo dev**. NSFW requiere $1.500+ setup, equipo legal, procesador adult, modelos LLM de menor calidad, y opera en mercado más pequeño con peor reputación. SFW desbloquea Stripe/Lemon, Claude/GPT, App Stores, marketing legítimo y un mercado 5-10x mayor.
->
-> La V2 NSFW se contemplará si y solo si la V1 SFW valida product-market fit. Se haría con entidad legal separada y dominio independiente, reutilizando tecnología pero aislando riesgo.
-
----
-
-## 3. Visión y posicionamiento
-
-### 3.1 Visión
+### 2.1 Visión
 Crear un compañero de IA que se sienta tan auténtico, presente y atento que el usuario establezca un vínculo emocional real, sostenido en el tiempo, sin necesidad de que el usuario crea que es humana.
 
-### 3.2 Posicionamiento — "Character-first / respectful ambiguity"
+### 2.2 Posicionamiento — "Character-first / respectful ambiguity"
 Modelo intermedio entre la honestidad explícita (Replika) y el engaño (qkkie agresivo). Usado con éxito por Character.AI, Talkie, Chai, Janitor.
 
 **Principios**:
@@ -262,7 +78,7 @@ Modelo intermedio entre la honestidad explícita (Replika) y el engaño (qkkie a
 - ✅ Footer discreto "AI character" en chat
 - ✅ Mención de IA al menos una vez en onboarding
 
-### 3.3 Frame de marca
+### 2.3 Frame de marca
 NO se vende como "AI girlfriend" ni como "AI companion app". Se vende por:
 - Personajes con personalidad fuerte
 - Experiencia inmersiva
@@ -275,15 +91,15 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 ---
 
-## 4. Mercado y segmentos de usuario
+## 3. Mercado y segmentos de usuario
 
-### 4.1 Tamaño del mercado (referencias)
+### 3.1 Tamaño del mercado (referencias)
 - **Replika**: 30M usuarios, ~$65M revenue (2023)
 - **Character.AI**: 20M+ MAU, adquirida por Google por $2.700M (2024)
 - **Chai App**: ~$40M revenue (2023)
 - **Mercado SFW companion** crece anualmente en doble dígito; segmento muy underserved en español/portugués
 
-### 4.2 Segmentos de usuario objetivo
+### 3.2 Segmentos de usuario objetivo
 
 | Segmento | % aprox | Qué busca | Disposición a pagar |
 |---|---|---|---|
@@ -295,7 +111,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 **Foco**: segmentos 1, 4 y secundariamente 3.
 
-### 4.3 Mercados geográficos
+### 3.3 Mercados geográficos
 - **Inglés global**: mercado más grande, más competencia
 - **Español (ESP + LatAm)**: mercado grande y MENOS competido (la mayoría de apps están mal localizadas)
 - **Portugués (Brasil)**: oportunidad bonus si Claude lo maneja bien (lo hace)
@@ -304,9 +120,9 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 ---
 
-## 5. Lo que el mercado quiere (validado por estudios y reseñas)
+## 4. Lo que el mercado quiere (validado por estudios y reseñas)
 
-### 5.1 Features que generan engagement (ordenadas por impacto)
+### 4.1 Features que generan engagement (ordenadas por impacto)
 
 1. **Memoria real** — la queja #1 de usuarios de Replika es que "se olvida"
 2. **Voz** — mensajes de audio aumentan engagement reportado en +300%
@@ -319,7 +135,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
 9. **Rutina y ritual** — buenos días, buenas noches automáticos
 10. **Continuidad** — lo que pasó ayer importa hoy
 
-### 5.2 Quejas recurrentes (oportunidad)
+### 4.2 Quejas recurrentes (oportunidad)
 
 | Queja | Oportunidad para nosotros |
 |---|---|
@@ -333,7 +149,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 ---
 
-## 6. Diferenciadores estratégicos (3 ejes elegidos)
+## 5. Diferenciadores estratégicos (3 ejes elegidos)
 
 ### 🥇 Eje 1 — Memoria profunda
 **Promesa**: "Te conoce mejor que tu mejor amigo. Recuerda todo. Crece contigo."
@@ -373,9 +189,9 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 ---
 
-## 7. Producto — MVP scope (versión "producto digno", 8-12 semanas)
+## 6. Producto — MVP scope (versión "producto digno", 8-12 semanas)
 
-### 7.1 Features CORE (lanzamiento)
+### 6.1 Features CORE (lanzamiento)
 
 **Cuentas y autenticación**
 - Registro con email + contraseña
@@ -434,7 +250,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
 - Recibos de pago
 - Alertas básicas (mensaje proactivo de personaje)
 
-### 7.2 Features FUERA del MVP (roadmap)
+### 6.2 Features FUERA del MVP (roadmap)
 
 **Mes 2-3 post-lanzamiento**
 - Mensajes de voz (ElevenLabs) — solo en plan premium
@@ -454,13 +270,13 @@ Ejemplos de posicionamiento posible (a desarrollar):
 - Vídeo
 - Multi-personaje (chat de grupo)
 - AR/VR
-- **V2 NSFW** (entidad y dominio separados, ver Sección 2.5)
+- **V2 NSFW** (entidad y dominio separados, ver Sección 16.5)
 
 ---
 
-## 8. Arquitectura técnica (alto nivel)
+## 7. Arquitectura técnica (alto nivel)
 
-### 8.1 Stack
+### 7.1 Stack
 - **Frontend**: Next.js 14 (App Router) + Tailwind + shadcn/ui
 - **Backend**: Next.js API Routes + Worker separado (Railway/Fly.io)
 - **DB principal**: Supabase (Postgres) con extensión pgvector
@@ -474,7 +290,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
 - **Monitoring**: Sentry (free tier)
 - **Hosting**: Vercel (free tier)
 
-### 8.2 Componentes lógicos clave
+### 7.2 Componentes lógicos clave
 
 ```
 [ Web Next.js ]
@@ -495,7 +311,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
       └─ Schedule proactive messages
 ```
 
-### 8.3 Flujo de un mensaje
+### 7.3 Flujo de un mensaje
 1. Usuario envía mensaje vía WebSocket o polling
 2. API valida (créditos disponibles, no abuse)
 3. Encolar en Redis para procesamiento
@@ -511,9 +327,9 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 ---
 
-## 9. Modelo de monetización
+## 8. Modelo de monetización
 
-### 9.1 Tiers
+### 8.1 Tiers
 
 **FREE**
 - 30 mensajes/día por personaje
@@ -540,20 +356,20 @@ Ejemplos de posicionamiento posible (a desarrollar):
 - Acceso prioritario a personajes nuevos
 - Personalización (cómo te llama, etc.)
 
-### 9.2 Créditos (compra suelta)
+### 8.2 Créditos (compra suelta)
 - Pack pequeño: 100 créditos = $4.99
 - Pack mediano: 500 créditos = $19.99
 - Pack grande: 2000 créditos = $49.99 (mejor margen)
 - Pack mega: 5000 créditos = $99.99
 
-### 9.3 Coste de extras en créditos
+### 8.3 Coste de extras en créditos
 - Foto SFW desbloqueada: 20 créditos
 - Foto sensual desbloqueada: 50 créditos
 - Mensaje de voz: 30 créditos
 - Foto personalizada (futuro): 200 créditos
 - Llamada (futuro): 100 créditos/min
 
-### 9.4 Métricas objetivo (industria SFW companion)
+### 8.4 Métricas objetivo (industria SFW companion)
 - Conversión free → paid: 4-7%
 - ARPU paying: $20-30/mes
 - ARPU global: $1-2/mes
@@ -562,9 +378,9 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 ---
 
-## 10. Simulación de costes
+## 9. Simulación de costes
 
-### 10.1 Costes fijos mensuales (independiente de usuarios)
+### 9.1 Costes fijos mensuales (independiente de usuarios)
 
 | Concepto | Coste/mes |
 |---|---|
@@ -580,7 +396,7 @@ Ejemplos de posicionamiento posible (a desarrollar):
 
 A partir de ~500 DAU empezarás a salir del free tier de varios servicios. A 1000 DAU rondará $50-80/mes de fijos.
 
-### 10.2 Coste variable principal: LLM
+### 9.2 Coste variable principal: LLM
 
 **Asumiendo Claude Haiku 4.5** (referencia ~$1/M tokens input, ~$5/M tokens output):
 
@@ -598,7 +414,7 @@ Por usuario al día según uso:
 
 **Vida propia (cron diario)**: ~$0.02/personaje/día. Con 8 personajes = $0.16/día = $5/mes total (independiente de usuarios).
 
-### 10.3 Escenarios de coste total
+### 9.3 Escenarios de coste total
 
 #### Escenario A — 100 DAU (mes 1-2)
 - 95 free × $1.20 = $114
@@ -622,7 +438,7 @@ Por usuario al día según uso:
 - Voz (50% paying con voz, $5/mes coste) = $1.750
 - **Total: ~$21.615/mes**
 
-### 10.4 Optimizaciones de coste posibles
+### 9.4 Optimizaciones de coste posibles
 - **Caching de prompts** (Anthropic prompt caching): -50% en input tokens repetidos. Crítico.
 - **Resúmenes en lugar de historial completo**: -60-80% en input tokens
 - **Modelo barato para usuarios free** (DeepSeek V3, Gemini Flash): -80% coste
@@ -631,9 +447,9 @@ Por usuario al día según uso:
 
 ---
 
-## 11. Proyección de ingresos
+## 10. Proyección de ingresos
 
-### 11.1 Asumiendo conversion 5%, ARPU paying $22 (mix subs + créditos)
+### 10.1 Asumiendo conversion 5%, ARPU paying $22 (mix subs + créditos)
 
 | Mes | DAU | % paying | Paying users | Ingreso bruto | Lemon 5% | Coste | **Profit** |
 |---|---|---|---|---|---|---|---|
@@ -647,7 +463,7 @@ Por usuario al día según uso:
 
 ⚠️ **Conclusión incómoda**: con estos parámetros conservadores, **NO llegas a profit aún a 10k DAU**. La economía no funciona.
 
-### 11.2 Por qué — y cómo arreglarlo
+### 10.2 Por qué — y cómo arreglarlo
 
 El problema: **el coste del free tier se come los ingresos**. 90%+ usuarios free generan coste de LLM y no pagan.
 
@@ -668,7 +484,7 @@ El problema: **el coste del free tier se come los ingresos**. 90%+ usuarios free
 4. **Subir ARPU con créditos bien diseñados**:
    - $22 → $30 ARPU es factible si el sistema de créditos funciona
 
-### 11.3 Escenario realista con optimizaciones
+### 10.3 Escenario realista con optimizaciones
 
 Aplicando: free agresivo 10 msg/día + modelo barato para free + conversión 7% + ARPU $28:
 
@@ -681,7 +497,7 @@ Aplicando: free agresivo 10 msg/día + modelo barato para free + conversión 7% 
 
 ✅ **Mucho mejor**. Con las optimizaciones correctas, **break-even al mes 2-3** y profit creciente.
 
-### 11.4 Realismo del crecimiento DAU
+### 10.4 Realismo del crecimiento DAU
 
 Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso pero no imposible**. Comparativas:
 - Replika llegó a 1M users en 18 meses con marketing
@@ -699,11 +515,11 @@ Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso per
 
 ---
 
-## 12. Roadmap y timeline
+## 11. Roadmap y timeline
 
 ### Fase 0 — Definición (en curso)
 - ✅ Posicionamiento, modelo, arquitectura
-- ✅ Decisión SFW vs NSFW documentada (Sección 2)
+- ✅ Decisión SFW vs NSFW documentada (Sección 16)
 - ⏳ Diseño de personajes (siguiente paso)
 - ⏳ Marca y dominio
 - ⏳ Setup legal (estructura, ToS, etc.)
@@ -740,31 +556,31 @@ Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso per
 
 ---
 
-## 13. Decisiones tomadas (resumen)
+## 12. Decisiones tomadas (resumen)
 
 | Decisión | Valor | Referencia |
 |---|---|---|
-| **Contenido** | **SFW soft** (sensual no explícito) | Sección 2 |
-| Versión NSFW futura | Posible V2 separada en 12-18 meses si SFW valida PMF | Sección 2.5 |
-| Posicionamiento | Character-first / ambigüedad respetuosa | Sección 3 |
-| Disclosure IA | En ToS/FAQ/footer + AI confirma si se le pregunta | Sección 3.2 |
-| Mercado | Inglés + Español (desde día 1) | Sección 4.3 |
-| LLM principal | Claude Haiku 4.5 | Sección 2.2.2, 8 |
-| LLM premium | Claude Sonnet 4.6 | Sección 2.2.2, 8 |
-| LLM gateway | Anthropic SDK directo, evaluar OpenRouter como backup | Sección 8 |
-| Pago | Lemon Squeezy (Merchant of Record) | Sección 2.2.1 |
-| Stack | Next.js + Supabase + Upstash + Vercel + Cloudflare R2 | Sección 8 |
+| **Contenido** | **SFW soft** (sensual no explícito) | Sección 16 |
+| Versión NSFW futura | Posible V2 separada en 12-18 meses si SFW valida PMF | Sección 16.5 |
+| Posicionamiento | Character-first / ambigüedad respetuosa | Sección 2 |
+| Disclosure IA | En ToS/FAQ/footer + AI confirma si se le pregunta | Sección 2.2 |
+| Mercado | Inglés + Español (desde día 1) | Sección 3.3 |
+| LLM principal | Claude Haiku 4.5 | Sección 7, 16.2.2 |
+| LLM premium | Claude Sonnet 4.6 | Sección 7, 16.2.2 |
+| LLM gateway | Anthropic SDK directo, evaluar OpenRouter como backup | Sección 7 |
+| Pago | Lemon Squeezy (Merchant of Record) | Sección 16.2.1 |
+| Stack | Next.js + Supabase + Upstash + Vercel + Cloudflare R2 | Sección 7 |
 | Imágenes | Pre-generadas en Promptchan | — |
-| Personajes lanzamiento | 5-8 (calidad > cantidad) | Sección 7.1 |
-| Diferenciadores | Memoria + Vida propia + Inteligencia emocional | Sección 6 |
-| Modelo monetización | Freemium con créditos + suscripción mensual | Sección 9 |
+| Personajes lanzamiento | 5-8 (calidad > cantidad) | Sección 6.1 |
+| Diferenciadores | Memoria + Vida propia + Inteligencia emocional | Sección 5 |
+| Modelo monetización | Freemium con créditos + suscripción mensual | Sección 8 |
 | Equipo | Solo (Daniel) | — |
 | Presupuesto inicial | $200-300 | — |
-| Tipo de MVP | "Producto digno" (8-12 semanas) | Sección 7 |
+| Tipo de MVP | "Producto digno" (8-12 semanas) | Sección 6 |
 
 ---
 
-## 14. Decisiones pendientes
+## 13. Decisiones pendientes
 
 ### Críticas (bloqueantes)
 - [ ] **Marca + dominio** (nombre del proyecto)
@@ -789,7 +605,7 @@ Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso per
 
 ---
 
-## 15. Riesgos identificados
+## 14. Riesgos identificados
 
 | Riesgo | Probabilidad | Impacto | Mitigación |
 |---|---|---|---|
@@ -802,11 +618,11 @@ Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso per
 | Calidad de personajes insuficiente | Media | Alto | Inversión grande en diseño de los 5-8 iniciales |
 | Competidor copia el diferenciador | Alta | Medio | First mover advantage + ejecución continua |
 | Cambio regulatorio (EU AI Act endurece) | Media | Medio | Cumplimiento desde día 1, monitoreo legal |
-| Tentación de meter NSFW en V1 | Media | Crítico | Disciplina: NSFW solo en V2 con dominio/entidad separados (Sección 2.5) |
+| Tentación de meter NSFW en V1 | Media | Crítico | Disciplina: NSFW solo en V2 con dominio/entidad separados (Sección 16.5) |
 
 ---
 
-## 16. Próximos pasos inmediatos
+## 15. Próximos pasos inmediatos
 
 **Por hacer Daniel** (acción asincrónica):
 1. Probar más a fondo qkkie y 1-2 competidores (Talkie, Character.AI) y anotar:
@@ -823,6 +639,184 @@ Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso per
 3. **Esquema de base de datos**: tablas, relaciones, índices
 4. **Diseño del system prompt template**: estructura común para todos los personajes
 5. **Estrategia de adquisición**: cómo conseguir los primeros 100 usuarios sin presupuesto
+
+---
+
+## 16. Decisión SFW vs NSFW (decisión fundacional)
+
+> **TL;DR**: SFW soft en V1. NSFW como V2 separada queda como posibilidad **post-validación de mercado**, no antes.
+>
+> Sección extensa con comparativas detalladas. Lectura recomendada para entender el porqué de las decisiones de procesador de pago, LLM y posicionamiento. No imprescindible para entender el resto del modelo.
+
+### 16.1 Por qué esta decisión es fundacional
+
+La decisión sobre el nivel de contenido **no es una decisión de producto, es la decisión que define la viabilidad del proyecto**. Afecta a:
+
+- **Qué procesador de pago puedes usar** (y cuánto te cuesta)
+- **Qué LLM puedes usar** (y por tanto qué calidad de conversación das)
+- **Si puedes lanzar app móvil** (App Store / Play Store)
+- **Qué canales de marketing tienes disponibles**
+- **El tamaño total del mercado al que apuntas**
+- **Tu exposición legal y regulatoria**
+- **El estigma o legitimidad de tu marca**
+
+### 16.2 Comparativa exhaustiva SFW vs NSFW
+
+#### 16.2.1 Procesadores de pago
+
+| Procesador | SFW soft | NSFW explícito | Notas |
+|---|---|---|---|
+| **Stripe** | ✅ Acepta | ❌ Prohibido | Cierre + reserva fondos 180 días si te pillan |
+| **PayPal** | ✅ Acepta | ❌ Prohibido | Mismo riesgo + ban de cuenta personal asociada |
+| **Lemon Squeezy** (MoR) | ✅ Acepta | ❌ Rechaza | Recomendado para SFW: gestiona impuestos globales |
+| **Paddle** (MoR) | ✅ Acepta | ❌ Rechaza | Alternativa a Lemon |
+| **FastSpring** (MoR) | ✅ Acepta | ❌ Rechaza | Más caro, más enterprise |
+| **CCBill** | ⚠️ Overkill | ✅ Estándar adult | Líder histórico del sector adult |
+| **Segpay** | ⚠️ Overkill | ✅ Aceptado | Alternativa a CCBill |
+| **Epoch** | ⚠️ Overkill | ✅ Aceptado | Veterano del sector |
+| **Verotel** | ⚠️ Overkill | ✅ Aceptado | Europeo |
+| **NOWPayments** (cripto) | ✅ Acepta | ✅ Acepta | Acepta 300+ cryptos |
+| **Cryptomus** (cripto) | ✅ Acepta | ✅ Acepta | Popular en sector adult |
+
+**Comparativa de costes**:
+
+| Procesador | Comisión | Setup fee | Reserva | Tiempo aprobación |
+|---|---|---|---|---|
+| **Stripe** (SFW) | 2.9% + $0.30 | $0 | 0% | Instantáneo |
+| **PayPal** (SFW) | 2.9-3.5% | $0 | 0% | Instantáneo |
+| **Lemon Squeezy** (SFW MoR) | 5% + $0.50 | $0 | 0% | Días |
+| **CCBill** (NSFW) | 10-15% | $500-1.500 | 5-10% durante 6 meses | 2-8 semanas |
+| **Segpay** (NSFW) | 10-15% | $500-2.000 | 5-10% durante 6 meses | 2-8 semanas |
+| **NOWPayments** (cripto) | 0.5% | $0 | 0% | Días |
+
+**Impacto económico** simulado con $10.000 ingresos/mes:
+
+| Vía | Comisión | Reserva retenida | **Neto al mes** |
+|---|---|---|---|
+| SFW + Stripe | $290 | $0 | **$9.710** |
+| SFW + Lemon Squeezy | $500 | $0 | **$9.500** |
+| NSFW + CCBill | $1.250 | $750 (recuperable a 6m) | **$8.000** |
+| NSFW + cripto only | $50 | $0 | **$9.950** (pero pool de usuarios menor) |
+
+#### 16.2.2 Proveedores de IA (LLM)
+
+| Proveedor | Modelo | SFW | NSFW | Coste $/M tokens (in / out) | Calidad |
+|---|---|---|---|---|---|
+| **Anthropic** | Claude Haiku 4.5 | ✅ | ❌ AUP prohíbe | $1 / $5 | Alta |
+| **Anthropic** | Claude Sonnet 4.6 | ✅ | ❌ AUP prohíbe | $3 / $15 | Muy alta |
+| **OpenAI** | GPT-4o-mini | ✅ | ❌ ToS prohíbe | $0.15 / $0.60 | Alta |
+| **OpenAI** | GPT-4o | ✅ | ❌ ToS prohíbe | $5 / $15 | Muy alta |
+| **Google** | Gemini 2.5 Flash | ✅ | ❌ ToS prohíbe | $0.30 / $2.50 | Alta |
+| **OpenRouter** | Lumimaid 70B | ✅ | ✅ | ~$0.80 / $0.80 | Media-Alta (NSFW) |
+| **OpenRouter** | Magnum v4 72B | ✅ | ✅ | ~$1.50 / $1.50 | Alta (NSFW) |
+| **Mistral** | Nemo 12B | ✅ | ⚠️ con prompts cuidadosos | $0.10 / $0.30 | Media |
+| **DeepSeek** | DeepSeek V3 | ✅ | ⚠️ zona gris según provider | $0.30 / $1.10 | Alta |
+
+**Calidad comparada para chat emocional/companion**:
+
+SFW (libre acceso a top tier):
+- 🥇 Claude Sonnet 4.6 — el mejor para conexión emocional, calidez, memoria larga
+- 🥈 GPT-4o — muy bueno
+- 🥉 Claude Haiku 4.5 — 90% calidad de Sonnet a 1/3 del precio (modelo principal recomendado)
+- Gemini 2.5 Flash — bueno y barato
+- DeepSeek V3 — bueno, multi-idioma fuerte, barato
+
+NSFW (limitado a uncensored):
+- 🥇 Magnum v4 72B — mejor calidad NSFW del mercado open
+- 🥈 Lumimaid 70B — popular y equilibrado
+- 🥉 Llama 3.3 70B fine-tunes uncensored — variable
+
+La calidad NSFW disponible es **inferior** a la calidad SFW de Claude/GPT. Hacer NSFW = renunciar a usar los mejores modelos del mundo.
+
+#### 16.2.3 Distribución y marketing
+
+| Canal | SFW | NSFW |
+|---|---|---|
+| App Store (Apple) | ✅ Aceptado | ❌ Prohibido (regla 1.1.4 de la App Review Guidelines) |
+| Play Store (Google) | ✅ Aceptado | ❌ Prohibido o relegado a sideload |
+| Google Ads | ✅ Permitido | ❌ Prohibido |
+| Meta Ads (Facebook/Instagram) | ✅ Permitido | ❌ Prohibido |
+| TikTok Ads | ✅ Permitido | ❌ Prohibido |
+| Reddit Ads | ✅ Permitido | ⚠️ Solo en subs adult específicos |
+| YouTube partnerships | ✅ Posible | ❌ No viable |
+| Influencers mainstream | ✅ Posible | ❌ Limitado a nichos adult |
+| SEO Google (orgánico) | ✅ Sin penalización | ⚠️ Penalizado parcialmente (SafeSearch) |
+| Tráfico afiliados adult | ⚠️ Irrelevante | ✅ Ecosistema establecido |
+| Email marketing (Resend, etc.) | ✅ Sin restricción | ⚠️ Mayoría de proveedores rechazan |
+
+#### 16.2.4 Legal y regulatorio
+
+| Aspecto | SFW | NSFW |
+|---|---|---|
+| **18 USC 2257** (record-keeping EE.UU.) | No aplica | Aplica con exención AI declarada (riesgo si mal documentado) |
+| **EU AI Act** | Aplica disclosure | Aplica disclosure + restricciones extra |
+| **GDPR** | Aplica estándar | Aplica con extra cuidado en datos sensibles |
+| **Verificación edad** | Checkbox 18+ | Verificación robusta (DNI, servicio externo $0.50-2/usuario) |
+| **DMCA** | Aplica con baja incidencia | Aplica con alta incidencia (más reportes) |
+| **Restricciones país** | Mínimas | Prohibido en Indonesia, Tailandia, partes Asia/África/Oriente Medio |
+| **Riesgo demanda psicológica** | Bajo | Alto (especialmente si usuario menor o vulnerable) |
+| **Estructura legal recomendada** | Autónomo o SL | SL (separación patrimonial obligatoria) |
+
+### 16.3 Tamaño y características del mercado
+
+| Aspecto | SFW companion | NSFW companion |
+|---|---|---|
+| Tamaño mercado global | **5-10x más grande** | Más pequeño pero pago/usuario mayor |
+| Competencia | Alta pero diferenciable | Alta y agresiva |
+| Tipo de usuario | Diverso (soledad, curiosidad, romance) | Concentrado (hombres 18-45) |
+| ARPU paying | $15-30/mes | $30-100/mes |
+| Conversión free→paid | 4-7% | 6-12% |
+| Churn mensual | 15-25% | 25-40% (más alto) |
+| LTV paying | $80-180 | $120-300 |
+| Reputación social | Neutra/positiva (wellness) | Negativa/estigma |
+| Capacidad de PR/medios | Alta | Difícil |
+| Casos de éxito recientes | Replika 30M users, Character.AI vendida $2.7B (2024) | Candy.AI, DreamGF (privadas, sin datos públicos confirmables) |
+
+### 16.4 Por qué se eligió SFW soft (los 10 motivos)
+
+1. **Procesador de pago disponible desde día 1** sin pagar $500-1.500 de setup ni esperar 2-8 semanas. Crítico con presupuesto $200-300.
+2. **LLM de máxima calidad disponible** (Claude Haiku/Sonnet vs uncensored de calidad media).
+3. **Marketing escalable** — Google Ads, Meta Ads, TikTok, App Stores cuando llegue el momento.
+4. **Mercado total 5-10x mayor** — Replika 30M, Character.AI vendida por $2.7B.
+5. **Posicionamiento de marca limpio** — sin estigma, mediabilidad alta, partnerships posibles.
+6. **Riesgo legal inferior** — sin 2257, sin lawsuits por contenido sexual, sin requisito KYC fuerte.
+7. **Menor coste operativo** — sin reserva del 5-10% de CCBill, churn más bajo, soporte más sencillo.
+8. **Margen de NSFW soft permitido** — fotos de lencería/bikini son SFW para Stripe/Lemon (ver caso qkkie con PayPal). No se renuncia al "premium" desbloqueable.
+9. **Compatibilidad con apps móviles a futuro** — fundamental para escalar.
+10. **Capacidad de operar como solo dev** — NSFW realmente requiere equipo o partnership con procesador adult, gestión legal, etc. Solo dev + NSFW = inviable con $300.
+
+### 16.5 Visión a futuro: posible versión NSFW (V2)
+
+**No se descarta**. Si la versión SFW valida product-market fit y genera caja, podría considerarse una versión NSFW separada.
+
+**Cuándo tendría sentido lanzarla**:
+- Tras 12-18 meses de operación SFW estable
+- Con $5.000-10.000 MRR consolidados (caja para invertir)
+- Con base de usuarios SFW que demande ese tipo de contenido (señal de demanda real)
+- Con tiempo / equipo para gestionar las complicaciones operativas extra
+
+**Cómo se haría (arquitectura V2 NSFW)**:
+- **Dominio separado** (ej: `marca.com` SFW, `marca-plus.com` o entidad legal distinta para NSFW)
+- **Empresa legal separada** o subsidiaria para aislar riesgo del negocio SFW
+- **Procesador CCBill / Segpay** + cripto (ya factible con caja consolidada)
+- **Modelos uncensored vía OpenRouter** (Magnum, Lumimaid)
+- **Verificación de edad robusta** (servicio tipo Yoti, AgeVerify, $0.50-2/verificación)
+- **Compliance 2257-exempt declaration** (porque personajes son IA, no personas reales — debe ir formal y visible)
+- **Reutilización de tecnología SFW** (motor de memoria, mood, vida propia, todo aplica)
+- **Migración voluntaria de usuarios** ("desbloquear modo adulto" con verificación adicional y consentimiento explícito)
+
+**Lo que NO se hará nunca**:
+- ❌ Mezclar contenido NSFW en la app SFW (riesgo de cierre instantáneo de Stripe/Lemon → muerte del negocio)
+- ❌ Ambigüedad legal de tipo "está en gris" — o claramente SFW o claramente NSFW separado
+- ❌ Lanzar V2 NSFW antes de tener V1 SFW estable y rentable
+
+### 16.6 Resumen de la decisión
+
+> **SFW soft V1 ahora. NSFW V2 quizás en 12-18 meses tras validar SFW.**
+>
+> Razón principal: **viabilidad económica y operativa con $300 y solo dev**. NSFW requiere $1.500+ setup, equipo legal, procesador adult, modelos LLM de menor calidad, y opera en mercado más pequeño con peor reputación. SFW desbloquea Stripe/Lemon, Claude/GPT, App Stores, marketing legítimo y un mercado 5-10x mayor.
+>
+> La V2 NSFW se contemplará si y solo si la V1 SFW valida product-market fit. Se haría con entidad legal separada y dominio independiente, reutilizando tecnología pero aislando riesgo.
 
 ---
 
@@ -845,7 +839,8 @@ Llegar a **10.000 DAU en 12 meses solo y sin presupuesto de ads es ambicioso per
 - Apple App Review Guidelines 1.1.4 (contenido sexual)
 
 ### C. Historial de decisiones
-- 2026-05-04: Pivote de NSFW a SFW soft (motivos detallados en Sección 2)
+- 2026-05-04: Pivote de NSFW a SFW soft (motivos detallados en Sección 16)
 - 2026-05-04: Pivote de "honest companion" a "character-first ambiguo respetuoso"
 - 2026-05-04: Decisión de "producto digno" (MVP 8-12 semanas) vs MVP mínimo
-- 2026-05-04: Documentación formal de la decisión SFW vs NSFW con comparativa exhaustiva (esta versión)
+- 2026-05-04: Documentación formal de la decisión SFW vs NSFW con comparativa exhaustiva
+- 2026-05-04: Reorganización — sección SFW vs NSFW movida del inicio (Sección 2) al final (Sección 16) para no saturar la lectura inicial con detalle de procesadores/LLM
